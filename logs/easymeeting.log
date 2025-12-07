@@ -1,0 +1,21 @@
+2025-12-08 00:22:01 [DEBUG][org.springframework.boot.availability.ApplicationAvailabilityBean][onApplicationEvent][77]-> Application availability state ReadinessState changed from ACCEPTING_TRAFFIC to REFUSING_TRAFFIC
+2025-12-08 00:22:01 [DEBUG][org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext][doClose][1161]-> Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@37052337, started on Sun Dec 07 23:59:34 CST 2025
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][stop][611]-> Stopping beans in phase 2147483647
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'redisKeyValueAdapter' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][stop][611]-> Stopping beans in phase 2147482623
+2025-12-08 00:22:01 [INFO][org.springframework.boot.web.embedded.tomcat.GracefulShutdown][shutDownGracefully][54]-> Commencing graceful shutdown. Waiting for active requests to complete
+2025-12-08 00:22:01 [INFO][org.springframework.boot.web.embedded.tomcat.GracefulShutdown][doShutdown][76]-> Graceful shutdown complete
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'webServerGracefulShutdown' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][stop][611]-> Stopping beans in phase 2147481599
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'webServerStartStop' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][stop][611]-> Stopping beans in phase 1073741823
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'applicationTaskExecutor' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][stop][611]-> Stopping beans in phase 0
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'redisConnectionFactory' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'reactorResourceFactory' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][stop][611]-> Stopping beans in phase -2147483647
+2025-12-08 00:22:01 [DEBUG][org.springframework.context.support.DefaultLifecycleProcessor][lambda$doStop$5][467]-> Bean 'springBootLoggingLifecycle' completed its stop procedure
+2025-12-08 00:22:01 [DEBUG][org.springframework.beans.factory.support.DisposableBeanAdapter][logDestroyMethodCompletion][362]-> Custom destroy method 'shutdown' on bean with name 'lettuceClientResources' completed asynchronously
+2025-12-08 00:22:01 [DEBUG][org.springframework.jmx.export.annotation.AnnotationMBeanExporter][destroy][467]-> Unregistering JMX-exposed beans on shutdown
+2025-12-08 00:22:01 [DEBUG][org.springframework.jmx.export.annotation.AnnotationMBeanExporter][unregisterBeans][186]-> Unregistering JMX-exposed beans
+2025-12-08 00:22:01 [DEBUG][org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor][shutdown][370]-> Shutting down ExecutorService 'applicationTaskExecutor'
