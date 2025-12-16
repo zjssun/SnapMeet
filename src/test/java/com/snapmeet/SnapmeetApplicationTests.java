@@ -1,4 +1,4 @@
-package com.example.snapmeet;
+package com.snapmeet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

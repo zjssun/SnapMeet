@@ -1,4 +1,4 @@
-package com.example.snapmeet;
+package com.snapmeet;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

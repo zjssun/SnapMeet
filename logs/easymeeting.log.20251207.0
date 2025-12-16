@@ -6,10 +6,10 @@
 2025-12-07 23:59:34 [DEBUG][org.hibernate.validator.internal.xml.config.ValidationXmlParser][getValidationXmlInputStream][129]-> No META-INF/validation.xml found. Using annotation based configuration only.
 2025-12-07 23:59:34 [DEBUG][org.hibernate.validator.internal.engine.resolver.TraversableResolvers][getDefault][61]-> Cannot find jakarta.persistence.Persistence on classpath. Assuming non JPA 2 environment. All properties will per default be traversable.
 2025-12-07 23:59:34 [DEBUG][org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator][buildExpressionFactory][175]-> Loaded expression factory via original TCCL
-2025-12-07 23:59:34 [INFO][com.example.snapmeet.SnapmeetApplication][logStarting][53]-> Starting SnapmeetApplication using Java 23.0.1 with PID 28416 (D:\java_work\snapmeet\target\classes started by SamRol in D:\java_work\snapmeet)
-2025-12-07 23:59:34 [DEBUG][com.example.snapmeet.SnapmeetApplication][logStarting][54]-> Running with Spring Boot v3.5.8, Spring v6.2.14
-2025-12-07 23:59:34 [INFO][com.example.snapmeet.SnapmeetApplication][logStartupProfileInfo][652]-> No active profile set, falling back to 1 default profile: "default"
-2025-12-07 23:59:34 [DEBUG][org.springframework.boot.SpringApplication][load][685]-> Loading source class com.example.snapmeet.SnapmeetApplication
+2025-12-07 23:59:34 [INFO][com.snapmeet.SnapmeetApplication][logStarting][53]-> Starting SnapmeetApplication using Java 23.0.1 with PID 28416 (D:\java_work\snapmeet\target\classes started by SamRol in D:\java_work\snapmeet)
+2025-12-07 23:59:34 [DEBUG][com.snapmeet.SnapmeetApplication][logStarting][54]-> Running with Spring Boot v3.5.8, Spring v6.2.14
+2025-12-07 23:59:34 [INFO][com.snapmeet.SnapmeetApplication][logStartupProfileInfo][652]-> No active profile set, falling back to 1 default profile: "default"
+2025-12-07 23:59:34 [DEBUG][org.springframework.boot.SpringApplication][load][685]-> Loading source class com.snapmeet.SnapmeetApplication
 2025-12-07 23:59:34 [DEBUG][org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext][prepareRefresh][674]-> Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@37052337
 2025-12-07 23:59:34 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
 2025-12-07 23:59:34 [DEBUG][org.hibernate.validator.internal.engine.ValidatorFactoryConfigurationHelper][determinePropertyNodeNameProvider][355]-> HV000252: Using org.hibernate.validator.internal.engine.DefaultPropertyNodeNameProvider as property node name provider.
@@ -29,15 +29,15 @@
 2025-12-07 23:59:35 [DEBUG][org.springframework.boot.autoconfigure.AutoConfigurationPackages][get][213]-> @EnableAutoConfiguration was declared on a class in the package 'com.example.snapmeet'. Automatic @Repository and @Entity scanning is enabled.
 2025-12-07 23:59:35 [DEBUG][org.springframework.data.repository.config.RepositoryConfigurationDelegate][registerRepositoriesIn][155]-> Scanning for Redis repositories in packages com.example.snapmeet.
 2025-12-07 23:59:35 [INFO][org.springframework.data.repository.config.RepositoryConfigurationDelegate][registerRepositoriesIn][213]-> Finished Spring Data repository scanning in 6 ms. Found 0 Redis repository interfaces.
-2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'com.example.snapmeet.config.MyBatisConfig#MapperScannerRegistrar#0'
-2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'com.example.snapmeet.SnapmeetApplication#MapperScannerRegistrar#0'
+2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'config.com.snapmeet.MyBatisConfig#MapperScannerRegistrar#0'
+2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'com.snapmeet.SnapmeetApplication#MapperScannerRegistrar#0'
 2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'propertySourcesPlaceholderConfigurer'
 2025-12-07 23:59:35 [DEBUG][org.apache.ibatis.logging.LogFactory][setImplementation][112]-> Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
 2025-12-07 23:59:35 [DEBUG][org.mybatis.spring.mapper.ClassPathMapperScanner][scanCandidateComponents][475]-> Identified candidate component class: file [D:\java_work\snapmeet\target\classes\com\example\snapmeet\mapper\UserInfoMapper.class]
-2025-12-07 23:59:35 [DEBUG][org.mybatis.spring.mapper.ClassPathMapperScanner][debug][49]-> Creating MapperFactoryBean with name 'userInfoMapper' and 'com.example.snapmeet.mapper.UserInfoMapper' mapperInterface
+2025-12-07 23:59:35 [DEBUG][org.mybatis.spring.mapper.ClassPathMapperScanner][debug][49]-> Creating MapperFactoryBean with name 'userInfoMapper' and 'mapper.com.snapmeet.UserInfoMapper' mapperInterface
 2025-12-07 23:59:35 [DEBUG][org.mybatis.spring.mapper.ClassPathMapperScanner][debug][49]-> Enabling autowire by type for MapperFactoryBean with name 'userInfoMapper'.
 2025-12-07 23:59:35 [DEBUG][org.mybatis.spring.mapper.ClassPathMapperScanner][scanCandidateComponents][475]-> Identified candidate component class: file [D:\java_work\snapmeet\target\classes\com\example\snapmeet\mapper\UserInfoMapper.class]
-2025-12-07 23:59:35 [WARN][org.mybatis.spring.mapper.ClassPathMapperScanner][warn][44]-> Skipping MapperFactoryBean with name 'userInfoMapper' and 'com.example.snapmeet.mapper.UserInfoMapper' mapperInterface. Bean already defined with the same name!
+2025-12-07 23:59:35 [WARN][org.mybatis.spring.mapper.ClassPathMapperScanner][warn][44]-> Skipping MapperFactoryBean with name 'userInfoMapper' and 'mapper.com.snapmeet.UserInfoMapper' mapperInterface. Bean already defined with the same name!
 2025-12-07 23:59:35 [WARN][org.mybatis.spring.mapper.ClassPathMapperScanner][warn][44]-> No MyBatis mapper was found in '[com.example.snapmeet.mapper]' package. Please check your configuration.
 2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'org.springframework.boot.sql.init.dependency.DatabaseInitializationDependencyConfigurer$DependsOnDatabaseInitializationPostProcessor'
 2025-12-07 23:59:35 [DEBUG][org.springframework.beans.factory.support.DefaultListableBeanFactory][getSingleton][308]-> Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
@@ -1863,7 +1863,7 @@ Negative matches:
 
    MybatisPlusAutoConfiguration.MapperScannerRegistrarNotFoundConfiguration:
       Did not match:
-         - @ConditionalOnMissingBean (types: org.mybatis.spring.mapper.MapperFactoryBean,org.mybatis.spring.mapper.MapperScannerConfigurer; SearchStrategy: all) found beans of type 'org.mybatis.spring.mapper.MapperScannerConfigurer' com.example.snapmeet.config.MyBatisConfig#MapperScannerRegistrar#0, com.example.snapmeet.SnapmeetApplication#MapperScannerRegistrar#0 (OnBeanCondition)
+         - @ConditionalOnMissingBean (types: org.mybatis.spring.mapper.MapperFactoryBean,org.mybatis.spring.mapper.MapperScannerConfigurer; SearchStrategy: all) found beans of type 'org.mybatis.spring.mapper.MapperScannerConfigurer' config.com.snapmeet.MyBatisConfig#MapperScannerRegistrar#0, com.snapmeet.SnapmeetApplication#MapperScannerRegistrar#0 (OnBeanCondition)
 
    MybatisPlusInnerInterceptorAutoConfiguration:
       Did not match:
@@ -2200,6 +2200,6 @@ Unconditional classes:
 
 
 
-2025-12-07 23:59:37 [INFO][com.example.snapmeet.SnapmeetApplication][logStarted][59]-> Started SnapmeetApplication in 2.981 seconds (process running for 3.658)
+2025-12-07 23:59:37 [INFO][com.snapmeet.SnapmeetApplication][logStarted][59]-> Started SnapmeetApplication in 2.981 seconds (process running for 3.658)
 2025-12-07 23:59:37 [DEBUG][org.springframework.boot.availability.ApplicationAvailabilityBean][onApplicationEvent][77]-> Application availability state LivenessState changed to CORRECT
 2025-12-07 23:59:37 [DEBUG][org.springframework.boot.availability.ApplicationAvailabilityBean][onApplicationEvent][77]-> Application availability state ReadinessState changed to ACCEPTING_TRAFFIC

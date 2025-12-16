@@ -1,8 +1,8 @@
-package com.example.snapmeet.service.impl;
+package com.snapmeet.service.impl;
 
-import com.example.snapmeet.entity.po.UserInfo;
-import com.example.snapmeet.mapper.UserInfoMapper;
-import com.example.snapmeet.service.IUserInfoService;
+import com.snapmeet.entity.po.UserInfo;
+import com.snapmeet.mapper.UserInfoMapper;
+import com.snapmeet.service.IUserInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

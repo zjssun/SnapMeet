@@ -1,6 +1,6 @@
-package com.example.snapmeet.mapper;
+package com.snapmeet.mapper;
 
-import com.example.snapmeet.entity.po.UserInfo;
+import com.snapmeet.entity.po.UserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

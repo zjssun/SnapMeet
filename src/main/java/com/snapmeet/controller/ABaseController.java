@@ -1,8 +1,8 @@
-package com.example.snapmeet.controller;
+package com.snapmeet.controller;
 
-import com.example.snapmeet.entity.vo.ResponseVO;
-import com.example.snapmeet.entity.enums.ResponseCodeEnum;
-import com.example.snapmeet.exception.BusinessException;
+import com.snapmeet.entity.vo.ResponseVO;
+import com.snapmeet.entity.enums.ResponseCodeEnum;
+import com.snapmeet.exception.BusinessException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

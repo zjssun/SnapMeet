@@ -1,4 +1,4 @@
-package com.example.snapmeet.entity.enums;
+package com.snapmeet.entity.enums;
 
 public enum ResponseCodeEnum {
     CODE_200(200, "请求成功"),

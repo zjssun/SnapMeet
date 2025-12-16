@@ -1,4 +1,4 @@
-package com.example.snapmeet.entity.vo;
+package com.snapmeet.entity.vo;
 
 import lombok.Data;
 

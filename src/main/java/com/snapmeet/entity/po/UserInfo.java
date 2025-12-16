@@ -1,4 +1,4 @@
-package com.example.snapmeet.entity.po;
+package com.snapmeet.entity.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;

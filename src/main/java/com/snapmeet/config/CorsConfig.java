@@ -1,4 +1,4 @@
-package com.example.snapmeet.config;
+package com.snapmeet.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

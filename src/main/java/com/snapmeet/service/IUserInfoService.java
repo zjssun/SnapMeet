@@ -1,6 +1,6 @@
-package com.example.snapmeet.service;
+package com.snapmeet.service;
 
-import com.example.snapmeet.entity.po.UserInfo;
+import com.snapmeet.entity.po.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

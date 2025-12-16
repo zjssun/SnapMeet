@@ -1,4 +1,4 @@
-package com.example.snapmeet.config;
+package com.snapmeet.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
