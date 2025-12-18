@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
-@MapperScan("com.example.snapmeet.mapper")
+@MapperScan("com.snapmeet.mapper")
 @EnableTransactionManagement
 @EnableAsync
 @EnableScheduling

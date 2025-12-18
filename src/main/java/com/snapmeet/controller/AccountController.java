@@ -3,7 +3,7 @@ package com.snapmeet.controller;
 
 import com.snapmeet.entity.vo.CheckCodeVO;
 import com.snapmeet.entity.vo.ResponseVO;
-import com.snapmeet.mapper.UserInfoMapper;
+import com.snapmeet.redis.RedisComponent;
 import com.wf.captcha.ArithmeticCaptcha;
 import jakarta.annotation.Resource;
 import org.springframework.validation.annotation.Validated;
@@ -23,17 +23,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/account")
 @Validated
 public class AccountController extends ABaseController{
+
     @Resource
-    private UserInfoMapper userInfoMapper;
+    private RedisComponent redisComponent;
 
     @RequestMapping("/checkCode")
     public ResponseVO checkCode(){
         ArithmeticCaptcha captcha = new ArithmeticCaptcha(100,42);
         String code = captcha.text();
-        String checkCodeKey = "";
-        // base64图片
+        // 存到redis
+        String checkCodeKey = redisComponent.saveCheckCode(code);
+        // 验证码base64图片
         String checkCodeBase64 = captcha.toBase64();
-
+        // 返回redis的key和验证码图片
         CheckCodeVO checkCodeVO = new CheckCodeVO();
         checkCodeVO.setCheckCode(checkCodeBase64).setCheckCodeKey(checkCodeKey);
 
