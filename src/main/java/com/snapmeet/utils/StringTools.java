@@ -1,5 +1,6 @@
 package com.snapmeet.utils;
 
+import com.snapmeet.constants.Constants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -37,4 +38,11 @@ public class StringTools {
     public static String encodeByMD5(String originString){
         return StringTools.isEmpty(originString) ? null : DigestUtils.md5Hex(originString);
     }
+
+    //生成会议号
+    public static final String getMeetingNoOrMeetingId(){
+        return StringTools.getRandomNumber(Constants.LENGTH_10);
+    }
+
+
 }

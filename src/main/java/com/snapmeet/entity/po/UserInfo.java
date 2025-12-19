@@ -48,7 +48,7 @@ public class UserInfo implements Serializable {
      * 0:女 1:男 2：保密
      */
     @TableField("sex")
-    private Boolean sex;
+    private Integer sex;
 
     /**
      * 密码
@@ -60,7 +60,7 @@ public class UserInfo implements Serializable {
      * 状态
      */
     @TableField("status")
-    private Boolean status;
+    private Integer status;
 
     /**
      * 创建时间
