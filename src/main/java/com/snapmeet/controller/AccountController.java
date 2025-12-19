@@ -3,9 +3,14 @@ package com.snapmeet.controller;
 
 import com.snapmeet.entity.vo.CheckCodeVO;
 import com.snapmeet.entity.vo.ResponseVO;
+import com.snapmeet.exception.BusinessException;
 import com.snapmeet.redis.RedisComponent;
+import com.snapmeet.service.impl.UserInfoServiceImpl;
 import com.wf.captcha.ArithmeticCaptcha;
 import jakarta.annotation.Resource;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -25,6 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController extends ABaseController{
 
     @Resource
+    UserInfoServiceImpl userInfoService;
+
+    @Resource
     private RedisComponent redisComponent;
 
     @RequestMapping("/checkCode")
@@ -40,5 +48,23 @@ public class AccountController extends ABaseController{
         checkCodeVO.setCheckCode(checkCodeBase64).setCheckCodeKey(checkCodeKey);
 
         return getSuccessResponseVO(checkCodeVO);
+    }
+
+    @RequestMapping("/register")
+    public ResponseVO register(@NotEmpty String checkCodeKey,
+                               @NotEmpty @Email String email,
+                               @NotEmpty @Size(max=20)String password,
+                               @NotEmpty @Size(max=20) String nickName,
+                               @NotEmpty String checkCode){
+        try {
+            if(!checkCode.equalsIgnoreCase(redisComponent.getCheckCode(checkCodeKey))){
+                throw new BusinessException("图片验证码不正确");
+            }
+
+            this.userInfoService.register(email,password,nickName);
+            return getSuccessResponseVO(null);
+        }finally {
+            redisComponent.cleanCheckCode(checkCodeKey);
+        }
     }
 }

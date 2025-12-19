@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author sam
  * @since 2025-12-07
  */
-public interface IUserInfoService extends IService<UserInfo> {
-
+public interface IUserInfoService extends IService<UserInfo>{
+    void register(String email,String nickName,String password);
 }
