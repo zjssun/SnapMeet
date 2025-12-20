@@ -28,7 +28,7 @@ public class Constants {
     public static final String PING = "ping";
 
     // redis key
-    public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60;
+    public static final Integer REDIS_KEY_EXPIRES_ONE_MIN = 60000;
 
     public static final Integer REDIS_KEY_EXPIRES_DAY = REDIS_KEY_EXPIRES_ONE_MIN * 60 * 24;
 

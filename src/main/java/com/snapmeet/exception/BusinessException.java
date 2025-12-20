@@ -1,6 +1,6 @@
 package com.snapmeet.exception;
 
-import com.snapmeet.entity.enums.ResponseCodeEnum;
+import com.snapmeet.enums.ResponseCodeEnum;
 
 public class BusinessException extends RuntimeException {
     private ResponseCodeEnum codeEnum;

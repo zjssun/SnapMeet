@@ -1,6 +1,7 @@
 package com.snapmeet.redis;
 
 import com.snapmeet.constants.Constants;
+import com.snapmeet.entity.dto.TokenUserInfoDto;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -24,5 +25,10 @@ public class RedisComponent {
     //清除验证码
     public void cleanCheckCode(String checkCodeKey){
         redisUtils.delete(Constants.REDIS_KEY_CHECK_CODE+checkCodeKey);
+    }
+
+    public void saveTokenUserInfoDto(TokenUserInfoDto tokenUserInfoDto){
+        redisUtils.setex(Constants.REDIS_KEY_WS_TOKEN+tokenUserInfoDto.getToken(),tokenUserInfoDto,Constants.REDIS_KEY_EXPIRES_DAY);
+        redisUtils.setex(Constants.REDIS_KEY_WS_TOKEN_USERID+tokenUserInfoDto.getUserId(),tokenUserInfoDto.getToken(),Constants.REDIS_KEY_EXPIRES_DAY);
     }
 }

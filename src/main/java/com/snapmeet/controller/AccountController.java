@@ -3,6 +3,7 @@ package com.snapmeet.controller;
 
 import com.snapmeet.entity.vo.CheckCodeVO;
 import com.snapmeet.entity.vo.ResponseVO;
+import com.snapmeet.entity.vo.UserInfoVO;
 import com.snapmeet.exception.BusinessException;
 import com.snapmeet.redis.RedisComponent;
 import com.snapmeet.service.impl.UserInfoServiceImpl;
@@ -63,6 +64,22 @@ public class AccountController extends ABaseController{
 
             this.userInfoService.register(email,password,nickName);
             return getSuccessResponseVO(null);
+        }finally {
+            redisComponent.cleanCheckCode(checkCodeKey);
+        }
+    }
+
+    @RequestMapping("/login")
+    public ResponseVO login(@NotEmpty String checkCodeKey,
+                            @NotEmpty @Email String email,
+                            @NotEmpty @Size(max=20)String password,
+                            @NotEmpty String checkCode){
+        try {
+            if(!checkCode.equalsIgnoreCase(redisComponent.getCheckCode(checkCodeKey))){
+                throw new BusinessException("图片验证码不正确");
+            }
+            UserInfoVO userInfoVO = this.userInfoService.login(email,password);
+            return getSuccessResponseVO(userInfoVO);
         }finally {
             redisComponent.cleanCheckCode(checkCodeKey);
         }

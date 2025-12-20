@@ -2,6 +2,10 @@ package com.snapmeet.service;
 
 import com.snapmeet.entity.po.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.snapmeet.entity.vo.UserInfoVO;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 /**
  * <p>
@@ -13,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserInfoService extends IService<UserInfo>{
     void register(String email,String nickName,String password);
+
+    UserInfoVO login(@NotEmpty @Email String email, @NotEmpty @Size(max=20) String password);
 }

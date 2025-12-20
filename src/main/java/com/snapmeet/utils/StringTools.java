@@ -3,6 +3,11 @@ package com.snapmeet.utils;
 import com.snapmeet.constants.Constants;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.BeanUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class StringTools {
 
@@ -44,5 +49,29 @@ public class StringTools {
         return StringTools.getRandomNumber(Constants.LENGTH_10);
     }
 
+    //复制列表
+    public static <T,S> List<T> copyList(List<S> sList, Class<T> classz){
+        if (sList == null || sList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<T> list = new ArrayList<>(sList.size());
+        for (S s : sList) {
+            if (s == null) continue;
+            list.add(copy(s, classz));
+        }
+        return list;
+    }
 
+    //复制对象
+    public static <T,S> T copy(S s,Class<T> clazz){
+        if (s == null) return null;
+        T t = null;
+        try {
+            t = clazz.getDeclaredConstructor().newInstance();
+            BeanUtils.copyProperties(s, t);
+        } catch (Exception e) {
+            throw new RuntimeException("对象属性复制失败: 无法实例化 " + clazz.getName(), e);
+        }
+        return t;
+    }
 }

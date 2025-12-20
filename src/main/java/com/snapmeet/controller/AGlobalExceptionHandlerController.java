@@ -1,7 +1,7 @@
 package com.snapmeet.controller;
 
 import com.snapmeet.entity.vo.ResponseVO;
-import com.snapmeet.entity.enums.ResponseCodeEnum;
+import com.snapmeet.enums.ResponseCodeEnum;
 import com.snapmeet.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
