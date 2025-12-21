@@ -18,5 +18,5 @@ import jakarta.validation.constraints.Size;
 public interface IUserInfoService extends IService<UserInfo>{
     void register(String email,String nickName,String password);
 
-    UserInfoVO login(@NotEmpty @Email String email, @NotEmpty @Size(max=20) String password);
+    UserInfoVO login(@NotEmpty @Email String email, @NotEmpty @Size(max=32) String password);
 }

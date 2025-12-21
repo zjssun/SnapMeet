@@ -66,15 +66,20 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
     public UserInfoVO login(String email, String password) {
         // 检查邮箱是否已存在
         UserInfo existUser = this.getOne(new LambdaQueryWrapper<UserInfo>().eq(UserInfo::getEmail, email));
-        if(existUser == null){
-            throw new BusinessException("该邮箱未注册！");
+        if(existUser == null || !existUser.getPassword().equals(password)){
+            throw new BusinessException("邮箱或密码不正确！");
         }
+        // 检查账号状态
         if(UserStatusEnum.DISABLE.getStatus().equals(existUser.getStatus())){
             throw new BusinessException("账号已被禁用！");
         }
-        if(existUser.getLastOffTime() <= existUser.getLastLoginTime()){
+        // 检查账号是否已登录
+        if(existUser.getLastLoginTime() != null && existUser.getLastOffTime() <= existUser.getLastLoginTime()){
             throw new BusinessException("此账号已在别处登录！");
         }
+        //更新登录时间
+        existUser.setLastLoginTime(System.currentTimeMillis());
+        this.updateById(existUser);
         // TokenUserInfoDto是保存到Redis的
         TokenUserInfoDto tokenUserInfoDto = StringTools.copy(existUser,TokenUserInfoDto.class);
         String token = StringTools.encodeByMD5(tokenUserInfoDto.getUserId()+StringTools.getRandomString(Constants.LENGTH_20));
@@ -87,5 +92,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         UserInfoVO userInfoVO = StringTools.copy(existUser,UserInfoVO.class);
         userInfoVO.setToken(token);
         userInfoVO.setAdmin(tokenUserInfoDto.getAdmin());
+        return userInfoVO;
     }
 }

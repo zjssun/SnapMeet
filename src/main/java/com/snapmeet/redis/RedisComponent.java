@@ -27,6 +27,7 @@ public class RedisComponent {
         redisUtils.delete(Constants.REDIS_KEY_CHECK_CODE+checkCodeKey);
     }
 
+    //保存TokenUserInfoDto
     public void saveTokenUserInfoDto(TokenUserInfoDto tokenUserInfoDto){
         redisUtils.setex(Constants.REDIS_KEY_WS_TOKEN+tokenUserInfoDto.getToken(),tokenUserInfoDto,Constants.REDIS_KEY_EXPIRES_DAY);
         redisUtils.setex(Constants.REDIS_KEY_WS_TOKEN_USERID+tokenUserInfoDto.getUserId(),tokenUserInfoDto.getToken(),Constants.REDIS_KEY_EXPIRES_DAY);

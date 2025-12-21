@@ -72,7 +72,7 @@ public class AccountController extends ABaseController{
     @RequestMapping("/login")
     public ResponseVO login(@NotEmpty String checkCodeKey,
                             @NotEmpty @Email String email,
-                            @NotEmpty @Size(max=20)String password,
+                            @NotEmpty @Size(max=32)String password,
                             @NotEmpty String checkCode){
         try {
             if(!checkCode.equalsIgnoreCase(redisComponent.getCheckCode(checkCodeKey))){
