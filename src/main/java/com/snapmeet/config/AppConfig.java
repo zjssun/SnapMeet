@@ -13,7 +13,7 @@ public class AppConfig {
 
     @Getter
     @Value("${ws.port}")
-    private  String wsProt;
+    private  Integer wsProt;
 
     @Value("${project.folder}")
     private String projectFolder;
