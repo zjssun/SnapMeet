@@ -33,8 +33,13 @@ public class RedisComponent {
         redisUtils.setex(Constants.REDIS_KEY_WS_TOKEN_USERID+tokenUserInfoDto.getUserId(),tokenUserInfoDto.getToken(),Constants.REDIS_KEY_EXPIRES_DAY);
     }
 
-    //获取TokenUserInfoDto
+    //根据token获取TokenUserInfoDto
     public TokenUserInfoDto getTokenUserInfoDto(String token){
         return (TokenUserInfoDto)redisUtils.get(Constants.REDIS_KEY_WS_TOKEN+token);
+    }
+
+    //根据用户id获取TokenUserInfo
+    public TokenUserInfoDto getTokenUserInfoDtoByUserId(String UserId){
+        return (TokenUserInfoDto)redisUtils.get(Constants.REDIS_KEY_WS_TOKEN_USERID+UserId);
     }
 }

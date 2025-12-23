@@ -77,9 +77,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         if(existUser.getLastLoginTime() != null && existUser.getLastOffTime() <= existUser.getLastLoginTime()){
             throw new BusinessException("此账号已在别处登录！");
         }
-        //更新登录时间
-        existUser.setLastLoginTime(System.currentTimeMillis());
-        this.updateById(existUser);
         // TokenUserInfoDto是保存到Redis的
         TokenUserInfoDto tokenUserInfoDto = StringTools.copy(existUser,TokenUserInfoDto.class);
         String token = StringTools.encodeByMD5(tokenUserInfoDto.getUserId()+StringTools.getRandomString(Constants.LENGTH_20));

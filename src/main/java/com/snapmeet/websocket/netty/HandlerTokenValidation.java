@@ -3,6 +3,7 @@ package com.snapmeet.websocket.netty;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.redis.RedisComponent;
 import com.snapmeet.utils.StringTools;
+import com.snapmeet.websocket.ChannelContextUtils;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
@@ -24,6 +25,9 @@ public class HandlerTokenValidation extends SimpleChannelInboundHandler<FullHttp
     @Resource
     private RedisComponent redisComponent;
 
+    @Resource
+    private ChannelContextUtils channelContextUtils;
+
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
         String uri = fullHttpRequest.uri();
@@ -38,9 +42,12 @@ public class HandlerTokenValidation extends SimpleChannelInboundHandler<FullHttp
         if(tokenUserInfoDto==null){
             log.info("校验token失败{}",token);
             senErrorResponse(channelHandlerContext);
+            return;
         }
         channelHandlerContext.fireChannelRead(fullHttpRequest.retain());
-        //TODO 连接成功后初始化工作
+
+        //连接成功后初始化工作
+        channelContextUtils.addContext(tokenUserInfoDto.getUserId(),channelHandlerContext.channel());
 
     }
 
