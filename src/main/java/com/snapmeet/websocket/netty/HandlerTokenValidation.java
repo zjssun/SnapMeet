@@ -48,7 +48,7 @@ public class HandlerTokenValidation extends SimpleChannelInboundHandler<FullHttp
 
         //连接成功后初始化工作
         channelContextUtils.addContext(tokenUserInfoDto.getUserId(),channelHandlerContext.channel());
-
+    
     }
 
     private TokenUserInfoDto checkToken(String token){

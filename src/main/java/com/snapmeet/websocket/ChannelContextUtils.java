@@ -15,6 +15,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ChannelContextUtils {
     public static final ConcurrentHashMap<String, Channel> USER_CONTEXT_MAP = new ConcurrentHashMap<>();
-
     public static final ConcurrentHashMap<String, ChannelGroup> MEETING_ROOM_CONTEXT_MAP = new ConcurrentHashMap<>();
+
     private final UserInfoMapper userInfoMapper;
+    @Resource
     private final RedisComponent redisComponent;
 
     public ChannelContextUtils(UserInfoMapper userInfoMapper, RedisComponent redisComponent) {

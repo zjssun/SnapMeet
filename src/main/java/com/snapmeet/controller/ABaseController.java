@@ -1,13 +1,23 @@
 package com.snapmeet.controller;
 
+import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.vo.ResponseVO;
 import com.snapmeet.enums.ResponseCodeEnum;
 import com.snapmeet.exception.BusinessException;
+import com.snapmeet.redis.RedisComponent;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ABaseController {
+
+    @Resource
+    private RedisComponent redisComponent;
+
     protected static final String STATUC_SUCCESS = "success";
 
     protected static final String STATUC_ERROR = "error";
@@ -42,5 +52,12 @@ public class ABaseController {
         vo.setInfo(ResponseCodeEnum.CODE_500.getMsg());
         vo.setData(t);
         return vo;
+    }
+
+    protected TokenUserInfoDto getTokenUserInfoDto(){
+        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader("token");
+        TokenUserInfoDto tokenUserInfoDto = redisComponent.getTokenUserInfoDto(token);
+        return  tokenUserInfoDto;
     }
 }
