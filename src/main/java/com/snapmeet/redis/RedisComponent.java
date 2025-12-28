@@ -40,6 +40,7 @@ public class RedisComponent {
 
     //根据用户id获取TokenUserInfo
     public TokenUserInfoDto getTokenUserInfoDtoByUserId(String UserId){
-        return (TokenUserInfoDto)redisUtils.get(Constants.REDIS_KEY_WS_TOKEN_USERID+UserId);
+        String token = (String) redisUtils.get(Constants.REDIS_KEY_WS_TOKEN_USERID+UserId);
+        return getTokenUserInfoDto(token);
     }
 }

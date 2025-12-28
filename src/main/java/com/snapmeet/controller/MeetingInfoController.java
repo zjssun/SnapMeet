@@ -1,6 +1,7 @@
 package com.snapmeet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.snapmeet.annotation.GlobalInterceptor;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.vo.ResponseVO;
@@ -18,15 +19,23 @@ public class MeetingInfoController extends ABaseController{
     MeetingInfoServiceImpl meetingInfoServiceImpl;
 
     @RequestMapping("/getCurrenMeeting")
+    @GlobalInterceptor
     public ResponseVO getCurrenMeeting(){
 
         return getSuccessResponseVO(null);
     }
 
     @RequestMapping("/loadMeeting")
+    @GlobalInterceptor
     public ResponseVO loadMeeting(Integer pageNo){
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         Page<MeetingInfo> page = meetingInfoServiceImpl.getMeetingInfoList(tokenUserInfoDto.getUserId(),pageNo);
         return getSuccessResponseVO(page);
+    }
+
+    @RequestMapping("/quickMeeting")
+    @GlobalInterceptor
+    public ResponseVO quickMeeting(Integer meetingNo,String meetingName){
+        return null;
     }
 }
