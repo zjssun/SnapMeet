@@ -5,13 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.po.MeetingMember;
+import com.snapmeet.enums.MeetingStatusEnum;
 import com.snapmeet.mapper.MeetingInfoMapper;
 import com.snapmeet.mapper.MeetingMemberMapper;
 import com.snapmeet.service.IMeetingInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.snapmeet.utils.StringTools;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -43,5 +46,15 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         wrapper.orderByDesc("create_time");
         meetingInfoMapper.selectPage(page, wrapper);
         return page;
+    }
+
+    @Override
+    public void qucikMeeting(MeetingInfo meetingInfo, String nickName) {
+        LocalDateTime curDate = LocalDateTime.now();
+        meetingInfo.setCreateTime(curDate);
+        meetingInfo.setMeetingId(StringTools.getMeetingNoOrMeetingId());
+        meetingInfo.setStartTime(curDate);
+        meetingInfo.setStatus(MeetingStatusEnum.RUNING.getStatus());
+        this.save(meetingInfo);
     }
 }

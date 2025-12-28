@@ -15,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IMeetingInfoService extends IService<MeetingInfo> {
 
     Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo);
+
+    void qucikMeeting(MeetingInfo meetingInfo, String nickName);
 }

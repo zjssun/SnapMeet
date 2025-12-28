@@ -15,7 +15,7 @@ public class TokenUserInfoDto implements Serializable {
     private String nickName;
     private Integer sex;
     private String currentMeetingId;
-    private Boolean currentNickName;
+    private String currentNickName;
     private String myMeetingNo;
     private Boolean admin;
 }
