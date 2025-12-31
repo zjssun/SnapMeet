@@ -3,6 +3,7 @@ package com.snapmeet.redis;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -78,6 +79,21 @@ public class RedisUtils<V> {
             logger.error("设置redisKey:{},value:{}失败", key, value);
             return false;
         }
+    }
+
+    public void hmSet(String key, String hashKey, V value) {
+        HashOperations<String, String, V> hash = redisTemplate.opsForHash();
+        hash.put(key, hashKey, value);
+    }
+
+    public V hmGet(String key, String hashKey) {
+        HashOperations<String, String, String> hash = redisTemplate.opsForHash();
+        return (V) hash.get(key, hashKey);
+    }
+
+    public List<V> hvals(String key){
+        HashOperations<String, String, V> hash = redisTemplate.opsForHash();
+        return hash.values(key);
     }
 
     public boolean expire(String key, long time) {

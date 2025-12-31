@@ -17,4 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MeetingMemberServiceImpl extends ServiceImpl<MeetingMemberMapper, MeetingMember> implements IMeetingMemberService {
 
+    @Override
+    public void insertOrUpdate(MeetingMember meetingMember) {
+        this.saveOrUpdate(meetingMember);
+    }
 }

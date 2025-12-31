@@ -12,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2025-12-25
  */
 public interface IMeetingMemberService extends IService<MeetingMember> {
-
+    public void insertOrUpdate(MeetingMember meetingMember);
 }

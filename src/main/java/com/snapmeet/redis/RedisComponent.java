@@ -1,11 +1,16 @@
 package com.snapmeet.redis;
 
 import com.snapmeet.constants.Constants;
+import com.snapmeet.entity.dto.MeetingJoinDto;
+import com.snapmeet.entity.dto.MeetingMemberDTO;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class RedisComponent {
@@ -42,5 +47,19 @@ public class RedisComponent {
     public TokenUserInfoDto getTokenUserInfoDtoByUserId(String UserId){
         String token = (String) redisUtils.get(Constants.REDIS_KEY_WS_TOKEN_USERID+UserId);
         return getTokenUserInfoDto(token);
+    }
+
+    public void add2Meeting(String meetingId, MeetingMemberDTO meetingMemberDTO) {
+        redisUtils.hmSet(Constants.REDIS_KEY_MEETING_ROOM+meetingId,meetingMemberDTO.getUserId(),meetingMemberDTO);
+    }
+
+    public List<MeetingMemberDTO> getMeetingMemberList(String meetingId){
+        List<MeetingMemberDTO>  meetingMemberDTOList = redisUtils.hvals(Constants.REDIS_KEY_MEETING_ROOM+meetingId);
+        meetingMemberDTOList = meetingMemberDTOList.stream().sorted(Comparator.comparing(MeetingMemberDTO::getJoinTime)).collect(Collectors.toList());
+        return meetingMemberDTOList;
+    }
+
+    public MeetingMemberDTO getMeetingMember(String meetingId, String userId){
+        return (MeetingMemberDTO)redisUtils.hmGet(Constants.REDIS_KEY_MEETING_ROOM+meetingId,userId);
     }
 }

@@ -17,4 +17,6 @@ public interface IMeetingInfoService extends IService<MeetingInfo> {
     Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo);
 
     void qucikMeeting(MeetingInfo meetingInfo, String nickName);
+
+    void joinMeeting(String meetingId,String UserId,String nickName,Integer sex,Boolean videoOpen);
 }
