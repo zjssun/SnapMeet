@@ -1,8 +1,10 @@
 package com.snapmeet.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -19,4 +21,6 @@ public interface IMeetingInfoService extends IService<MeetingInfo> {
     void qucikMeeting(MeetingInfo meetingInfo, String nickName);
 
     void joinMeeting(String meetingId,String UserId,String nickName,Integer sex,Boolean videoOpen);
+
+    String preJoinMeeting(@NotNull String meetingNo, TokenUserInfoDto tokenUserInfoDto, String password);
 }

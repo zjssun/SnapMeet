@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.entity.dto.MeetingJoinDto;
 import com.snapmeet.entity.dto.MeetingMemberDTO;
 import com.snapmeet.entity.dto.MessageSendDto;
+import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.po.MeetingMember;
 import com.snapmeet.enums.*;
@@ -137,5 +138,33 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         messageSendDto.setMessageSend2Type(MessageSend2TypeEnum.GROUP.getType());
         messageSendDto.setMessageContent(meetingJoinDto);
         channelContextUtils.sendMessage(messageSendDto);
+    }
+
+    @Override
+    public String preJoinMeeting(String meetingNo, TokenUserInfoDto tokenUserInfoDto, String password) {
+        String userId = tokenUserInfoDto.getUserId();
+        LambdaQueryWrapper<MeetingInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(MeetingInfo::getMeetingNo, meetingNo)
+                .eq(MeetingInfo::getStatus, MeetingStatusEnum.RUNING.getStatus())
+                .orderByDesc(MeetingInfo::getCreateTime);
+        List<MeetingInfo> meetingInfoList = this.list(wrapper);
+        if(meetingInfoList.isEmpty()){
+            throw new BusinessException("会议不存在");
+        }
+        MeetingInfo meetingInfo = meetingInfoList.get(0);
+        if(!MeetingStatusEnum.RUNING.getStatus().equals(meetingInfo.getStatus())){
+            throw  new BusinessException("会议结束");
+        }
+        if(!StringTools.isEmpty(tokenUserInfoDto.getCurrentMeetingId())&&!meetingInfo.getMeetingId().equals(tokenUserInfoDto.getCurrentMeetingId())){
+            throw  new BusinessException("你有未结束的会议");
+        }
+        checkMeetingJoin(meetingInfo.getMeetingId(),userId);
+        if(MeetingJoinTypeEnum.PASSWORD.getType().equals(meetingInfo.getJoinType()) && !meetingInfo.getJoinPassword().equals(password)){
+            throw new BusinessException("入会密码不正确");
+        }
+
+        tokenUserInfoDto.setCurrentMeetingId(meetingInfo.getMeetingId());
+        redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
+        return meetingInfo.getMeetingId();
     }
 }

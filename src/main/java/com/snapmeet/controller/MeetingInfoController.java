@@ -72,4 +72,14 @@ public class MeetingInfoController extends ABaseController{
         meetingInfoService.joinMeeting(tokenUserInfoDto.getCurrentMeetingId(),tokenUserInfoDto.getUserId(),tokenUserInfoDto.getNickName(),tokenUserInfoDto.getSex(),videOpen);
         return  getSuccessResponseVO(null);
     }
+
+    @RequestMapping("/preJoinMeeting")
+    @GlobalInterceptor
+    public ResponseVO preJoinMeeting(@NotNull String meetingNo,@NotEmpty String nickName,String password){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        meetingNo = meetingNo.replace(" ","");
+        tokenUserInfoDto.setCurrentNickName(nickName);
+        String meetingId = meetingInfoService.preJoinMeeting(meetingNo,tokenUserInfoDto,password);
+        return getSuccessResponseVO(meetingId);
+    }
 }
