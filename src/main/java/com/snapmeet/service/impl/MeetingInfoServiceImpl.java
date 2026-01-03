@@ -18,6 +18,7 @@ import com.snapmeet.service.IMeetingInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.snapmeet.utils.StringTools;
 import com.snapmeet.websocket.ChannelContextUtils;
+import com.snapmeet.websocket.message.MessageHandler;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,8 +46,12 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
 
     @Resource
     private MeetingMemberServiceImpl meetingMemberService;
+
     @Autowired
     private RedisComponent redisComponent;
+
+    @Resource
+    private MessageHandler messageHandler;
 
     @Override
     public Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo) {
@@ -137,7 +142,7 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         messageSendDto.setMeetingId(meetingId);
         messageSendDto.setMessageSend2Type(MessageSend2TypeEnum.GROUP.getType());
         messageSendDto.setMessageContent(meetingJoinDto);
-        channelContextUtils.sendMessage(messageSendDto);
+        messageHandler.sendMessage(messageSendDto);
     }
 
     @Override

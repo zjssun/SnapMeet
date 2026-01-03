@@ -2,17 +2,22 @@ package com.snapmeet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.annotation.GlobalInterceptor;
+import com.snapmeet.entity.dto.MessageSendDto;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.vo.ResponseVO;
+import com.snapmeet.enums.MessageSend2TypeEnum;
 import com.snapmeet.exception.BusinessException;
 import com.snapmeet.service.impl.MeetingInfoServiceImpl;
 import com.snapmeet.utils.StringTools;
+import com.snapmeet.websocket.message.MessageHandler;
+import com.snapmeet.websocket.message.MessageHandler4RabbitMQ;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +31,9 @@ public class MeetingInfoController extends ABaseController{
 
     @Resource
     MeetingInfoServiceImpl meetingInfoService;
+
+    @Resource
+    private MessageHandler messageHandler;
 
     @RequestMapping("/getCurrenMeeting")
     @GlobalInterceptor
@@ -81,5 +89,15 @@ public class MeetingInfoController extends ABaseController{
         tokenUserInfoDto.setCurrentNickName(nickName);
         String meetingId = meetingInfoService.preJoinMeeting(meetingNo,tokenUserInfoDto,password);
         return getSuccessResponseVO(meetingId);
+    }
+
+    @RequestMapping("testSendMessage")
+    public ResponseVO testSendMessage(){
+        MessageSendDto sendDto = new MessageSendDto<>();
+        sendDto.setMessageSend2Type(MessageSend2TypeEnum.USER.getType());
+        sendDto.setReceiveUserId("47974058072");
+        sendDto.setMessageContent("时间"+System.currentTimeMillis());
+        messageHandler.sendMessage(sendDto);
+        return getSuccessResponseVO(null);
     }
 }
