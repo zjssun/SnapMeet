@@ -26,4 +26,10 @@ public interface IMeetingInfoService extends IService<MeetingInfo> {
     String preJoinMeeting(@NotNull String meetingNo, TokenUserInfoDto tokenUserInfoDto, String password);
 
     void exitMeetingRoom(TokenUserInfoDto tokenUserInfoDto, MeetingMemberStatusEnum statusEnum);
+
+    void forceExitMeeting(TokenUserInfoDto tokenUserInfoDto,String userId,MeetingMemberStatusEnum statusEnum);
+
+    MeetingInfo getMeetingInfoListByMeetingId(String currentMeetingId);
+
+    void finishMeeting(String currentMeetingId, String userId);
 }

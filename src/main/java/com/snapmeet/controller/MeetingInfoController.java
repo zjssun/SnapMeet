@@ -8,6 +8,7 @@ import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.vo.ResponseVO;
 import com.snapmeet.enums.MeetingMemberStatusEnum;
+import com.snapmeet.enums.MeetingStatusEnum;
 import com.snapmeet.enums.MessageSend2TypeEnum;
 import com.snapmeet.enums.MessageTypeEnum;
 import com.snapmeet.exception.BusinessException;
@@ -42,13 +43,6 @@ public class MeetingInfoController extends ABaseController{
     private MessageHandler messageHandler;
     @Autowired
     private RedisComponent redisComponent;
-
-    @RequestMapping("/getCurrenMeeting")
-    @GlobalInterceptor
-    public ResponseVO getCurrenMeeting(){
-
-        return getSuccessResponseVO(null);
-    }
 
     @RequestMapping("/loadMeeting")
     @GlobalInterceptor
@@ -99,11 +93,52 @@ public class MeetingInfoController extends ABaseController{
         return getSuccessResponseVO(meetingId);
     }
 
-    @RequestMapping("/existMeeting")
+    //退出会议
+    @RequestMapping("/exitMeeting")
     @GlobalInterceptor
     public ResponseVO exitMeeting(){
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         meetingInfoService.exitMeetingRoom(tokenUserInfoDto, MeetingMemberStatusEnum.EXIT_MEETING);
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("KickOutMeeting")
+    @GlobalInterceptor
+    public ResponseVO kickOutMeeting(@NotEmpty String userId){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        meetingInfoService.forceExitMeeting(tokenUserInfoDto,userId,MeetingMemberStatusEnum.KICK_OUT);
+        return getSuccessResponseVO(null);
+    }
+
+    @RequestMapping("blackMeeting")
+    @GlobalInterceptor
+    public ResponseVO blackMeeting(@NotEmpty String userId){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        meetingInfoService.forceExitMeeting(tokenUserInfoDto,userId,MeetingMemberStatusEnum.KICK_OUT);
+        return getSuccessResponseVO(null);
+    }
+
+    //获取当前正在进行的会议
+    @RequestMapping("/getCurrentMeeting")
+    @GlobalInterceptor
+    public ResponseVO getCurrentMeeting(){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        if(StringTools.isEmpty(tokenUserInfoDto.getCurrentMeetingId())){
+            return getSuccessResponseVO(null);
+        }
+        MeetingInfo meetingInfo = this.meetingInfoService.getMeetingInfoListByMeetingId(tokenUserInfoDto.getCurrentMeetingId());
+        if(MeetingStatusEnum.FINISHED.getStatus().equals(meetingInfo.getStatus())){
+            return  getSuccessResponseVO(null);
+        }
+        return   getSuccessResponseVO(meetingInfo);
+    }
+
+    //结束会议
+    @RequestMapping("/finishMeeting")
+    @GlobalInterceptor
+    public ResponseVO fishMeeting(){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        meetingInfoService.finishMeeting(tokenUserInfoDto.getCurrentMeetingId(),tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(null);
     }
 }

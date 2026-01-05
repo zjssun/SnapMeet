@@ -96,6 +96,15 @@ public class RedisUtils<V> {
         return hash.values(key);
     }
 
+    public void hdel(String key, String[] hashKeys) {
+        if (hashKeys == null || hashKeys.length == 0) {
+            return;
+        }
+        HashOperations<String, String, V> hash = redisTemplate.opsForHash();
+        // delete 方法接受可变参数 (Object... keys)，可以直接传入数组
+        hash.delete(key, (Object[]) hashKeys);
+    }
+
     public boolean expire(String key, long time) {
         try {
             if (time > 0) {
@@ -107,7 +116,6 @@ public class RedisUtils<V> {
             return false;
         }
     }
-
 
     public List<V> getQueueList(String key) {
         return redisTemplate.opsForList().range(key, 0, -1);
@@ -207,5 +215,4 @@ public class RedisUtils<V> {
         List<V> list = new ArrayList<>(topElements);
         return list;
     }
-
 }

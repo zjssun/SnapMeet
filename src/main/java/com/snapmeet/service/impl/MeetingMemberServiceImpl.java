@@ -30,4 +30,9 @@ public class MeetingMemberServiceImpl extends ServiceImpl<MeetingMemberMapper, M
         wrapper.eq(MeetingMember::getMeetingId, meetingId).eq(MeetingMember::getUserId, userId);
         this.update(meetingMember,  wrapper);
     }
+
+    @Override
+    public void updateByMeeingId(MeetingMember meetingMember, String meetingId) {
+        this.update(meetingMember,new LambdaQueryWrapper<MeetingMember>().eq(MeetingMember::getMeetingId,meetingId));
+    }
 }

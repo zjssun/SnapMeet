@@ -211,12 +211,59 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         List<MeetingMemberDTO> onLineMember = meetingMemberDTOList.stream().filter(item-> MeetingMemberStatusEnum.NORMAL.getStatus().equals(item.getStatus())).collect(Collectors.toList());
         if(onLineMember.isEmpty()){
             //TODO 结束会议
+            finishMeeting(meetingId,tokenUserInfoDto.getUserId());
             return;
         }
         if(ArrayUtils.contains(new Integer[]{MeetingMemberStatusEnum.KICK_OUT.getStatus(),MeetingMemberStatusEnum.BLACKLIST.getStatus()},statusEnum.getStatus())){
             MeetingMember meetingMember = new MeetingMember();
             meetingMember.setStatus(statusEnum.getStatus());
             meetingMemberService.updateByMeetingIdAndUserId(meetingMember,meetingId,userId);
+        }
+    }
+
+    @Override
+    public void forceExitMeeting(TokenUserInfoDto tokenUserInfoDto,String userId, MeetingMemberStatusEnum statusEnum) {
+
+        MeetingInfo meetingInfo = this.getOne(new LambdaQueryWrapper<MeetingInfo>().eq(MeetingInfo::getMeetingId, tokenUserInfoDto.getCurrentMeetingId()));
+        if(!meetingInfo.getCreateUserId().equals(tokenUserInfoDto.getUserId())){
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        TokenUserInfoDto userInfoDto = this.redisComponent.getTokenUserInfoDtoByUserId(userId);
+        exitMeetingRoom(userInfoDto,statusEnum);
+    }
+
+    @Override
+    public MeetingInfo getMeetingInfoListByMeetingId(String currentMeetingId) {
+        return this.getOne(new LambdaQueryWrapper<MeetingInfo>().eq(MeetingInfo::getMeetingId, currentMeetingId));
+    }
+
+    @Override
+    public void finishMeeting(String currentMeetingId, String userId) {
+        MeetingInfo meetingInfo = this.getOne(new LambdaQueryWrapper<MeetingInfo>().eq(MeetingInfo::getMeetingId, currentMeetingId));
+        if(userId!=null&&!meetingInfo.getCreateUserId().equals(userId)){
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        MeetingInfo updateInfo = new MeetingInfo();
+        updateInfo.setStatus(MeetingStatusEnum.FINISHED.getStatus());
+        updateInfo.setEndTime(LocalDateTime.now());
+        this.update(updateInfo,new LambdaQueryWrapper<MeetingInfo>().eq(MeetingInfo::getMeetingId, currentMeetingId));
+
+        MessageSendDto messageSendDto = new MessageSendDto<>();
+        messageSendDto.setMessageSend2Type(MessageSend2TypeEnum.GROUP.getType());
+        messageSendDto.setMessageType(MessageTypeEnum.FINISH_MEETING.getType());
+        messageHandler.sendMessage(messageSendDto);
+
+        MeetingMember meetingMember = new MeetingMember();
+        meetingMember.setMeetingStatus(MeetingStatusEnum.FINISHED.getStatus());
+        meetingMemberService.updateByMeeingId(meetingMember,currentMeetingId);
+
+        //TODO 更新预约会议状态
+
+        List<MeetingMemberDTO> meetingMemberDTOList = redisComponent.getMeetingMemberList(currentMeetingId);
+        for (MeetingMemberDTO meetingMemberDTO:meetingMemberDTOList){
+            TokenUserInfoDto userInfoDto = this.redisComponent.getTokenUserInfoDtoByUserId(meetingMemberDTO.getUserId());
+            userInfoDto.setCurrentMeetingId(null);
+            redisComponent.saveTokenUserInfoDto(userInfoDto);
         }
     }
 }
