@@ -2,12 +2,16 @@ package com.snapmeet.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.annotation.GlobalInterceptor;
+import com.snapmeet.entity.dto.MeetingMemberDTO;
 import com.snapmeet.entity.dto.MessageSendDto;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.vo.ResponseVO;
+import com.snapmeet.enums.MeetingMemberStatusEnum;
 import com.snapmeet.enums.MessageSend2TypeEnum;
+import com.snapmeet.enums.MessageTypeEnum;
 import com.snapmeet.exception.BusinessException;
+import com.snapmeet.redis.RedisComponent;
 import com.snapmeet.service.impl.MeetingInfoServiceImpl;
 import com.snapmeet.utils.StringTools;
 import com.snapmeet.websocket.message.MessageHandler;
@@ -22,6 +26,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/meeting")
 @Validated
@@ -34,6 +40,8 @@ public class MeetingInfoController extends ABaseController{
 
     @Resource
     private MessageHandler messageHandler;
+    @Autowired
+    private RedisComponent redisComponent;
 
     @RequestMapping("/getCurrenMeeting")
     @GlobalInterceptor
@@ -91,13 +99,11 @@ public class MeetingInfoController extends ABaseController{
         return getSuccessResponseVO(meetingId);
     }
 
-    @RequestMapping("testSendMessage")
-    public ResponseVO testSendMessage(){
-        MessageSendDto sendDto = new MessageSendDto<>();
-        sendDto.setMessageSend2Type(MessageSend2TypeEnum.USER.getType());
-        sendDto.setReceiveUserId("47974058072");
-        sendDto.setMessageContent("时间"+System.currentTimeMillis());
-        messageHandler.sendMessage(sendDto);
+    @RequestMapping("/existMeeting")
+    @GlobalInterceptor
+    public ResponseVO exitMeeting(){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        meetingInfoService.exitMeetingRoom(tokenUserInfoDto, MeetingMemberStatusEnum.EXIT_MEETING);
         return getSuccessResponseVO(null);
     }
 }

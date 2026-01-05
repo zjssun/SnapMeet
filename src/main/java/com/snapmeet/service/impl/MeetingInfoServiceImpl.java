@@ -1,12 +1,10 @@
 package com.snapmeet.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.snapmeet.entity.dto.MeetingJoinDto;
-import com.snapmeet.entity.dto.MeetingMemberDTO;
-import com.snapmeet.entity.dto.MessageSendDto;
-import com.snapmeet.entity.dto.TokenUserInfoDto;
+import com.snapmeet.entity.dto.*;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.po.MeetingMember;
 import com.snapmeet.enums.*;
@@ -20,12 +18,14 @@ import com.snapmeet.utils.StringTools;
 import com.snapmeet.websocket.ChannelContextUtils;
 import com.snapmeet.websocket.message.MessageHandler;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.ibatis.reflection.ArrayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -52,6 +52,8 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
 
     @Resource
     private MessageHandler messageHandler;
+    @Autowired
+    private MeetingMemberMapper meetingMemberMapper;
 
     @Override
     public Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo) {
@@ -171,5 +173,50 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         tokenUserInfoDto.setCurrentMeetingId(meetingInfo.getMeetingId());
         redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
         return meetingInfo.getMeetingId();
+    }
+
+    @Override
+    public void exitMeetingRoom(TokenUserInfoDto tokenUserInfoDto, MeetingMemberStatusEnum statusEnum) {
+        String meetingId = tokenUserInfoDto.getCurrentMeetingId();
+        if(StringTools.isEmpty(meetingId)){
+            return;
+        }
+        String userId = tokenUserInfoDto.getUserId();
+        Boolean exit = redisComponent.exitMeeting(meetingId,userId,statusEnum);
+        if(!exit){
+            // Redis里没成功退出（可能本来就不在），但仍需清理用户的本地状态
+            tokenUserInfoDto.setCurrentMeetingId(null);
+            redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
+            return;
+        }
+        //清空当前正在进行的会议
+        tokenUserInfoDto.setCurrentMeetingId(null);
+        redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
+
+        MessageSendDto messageSendDto = new MessageSendDto();
+        messageSendDto.setMessageType(MessageTypeEnum.EXIT_MEETING_ROOM.getType());
+        // 获取最新名单
+        List<MeetingMemberDTO> meetingMemberDTOList = redisComponent.getMeetingMemberList(meetingId);
+        // 封装业务包
+        MeetingExitDto meetingExitDto = new MeetingExitDto();
+        meetingExitDto.setExitUserId(userId)
+                .setMeetingMemberDTOList(meetingMemberDTOList)
+                .setExitStatus(statusEnum.getStatus());
+        messageSendDto.setMessageContent(JSON.toJSON(meetingExitDto));
+        messageSendDto.setMeetingId(meetingId);
+        messageSendDto.setMessageSend2Type(MessageSend2TypeEnum.GROUP.getType());
+        // 发送
+        messageHandler.sendMessage(messageSendDto);
+
+        List<MeetingMemberDTO> onLineMember = meetingMemberDTOList.stream().filter(item-> MeetingMemberStatusEnum.NORMAL.getStatus().equals(item.getStatus())).collect(Collectors.toList());
+        if(onLineMember.isEmpty()){
+            //TODO 结束会议
+            return;
+        }
+        if(ArrayUtils.contains(new Integer[]{MeetingMemberStatusEnum.KICK_OUT.getStatus(),MeetingMemberStatusEnum.BLACKLIST.getStatus()},statusEnum.getStatus())){
+            MeetingMember meetingMember = new MeetingMember();
+            meetingMember.setStatus(statusEnum.getStatus());
+            meetingMemberService.updateByMeetingIdAndUserId(meetingMember,meetingId,userId);
+        }
     }
 }

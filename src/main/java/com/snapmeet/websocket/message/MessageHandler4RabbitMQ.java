@@ -61,9 +61,7 @@ public class MessageHandler4RabbitMQ implements MessageHandler{
                     handleFailMessage(channel,dellivery,queueName);
                 }
             };
-            channel.basicConsume(queueName,autoAck,deliverCallback,consumeTag->{
-
-            });
+            channel.basicConsume(queueName,autoAck,deliverCallback,consumeTag->{});
         }catch (Exception e){
             log.error("rabbitmq监听消息失败");
         }
@@ -94,7 +92,7 @@ public class MessageHandler4RabbitMQ implements MessageHandler{
     public void sendMessage(MessageSendDto messageSendDto) {
         try(Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
-            String message = "这是我发布的一条消息("+System.currentTimeMillis()+")";
+            String message = JSON.toJSONString(messageSendDto);
             channel.basicPublish(EXCHANGE_NAME,"",null,message.getBytes());
         }catch (Exception e){
             log.error("rabbitmq发送消息失败");

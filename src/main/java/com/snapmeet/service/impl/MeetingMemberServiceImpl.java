@@ -1,5 +1,7 @@
 package com.snapmeet.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.snapmeet.entity.po.MeetingMember;
 import com.snapmeet.mapper.MeetingMemberMapper;
 import com.snapmeet.service.IMeetingMemberService;
@@ -20,5 +22,12 @@ public class MeetingMemberServiceImpl extends ServiceImpl<MeetingMemberMapper, M
     @Override
     public void insertOrUpdate(MeetingMember meetingMember) {
         this.saveOrUpdate(meetingMember);
+    }
+
+    @Override
+    public void updateByMeetingIdAndUserId(MeetingMember meetingMember, String meetingId, String userId) {
+        LambdaQueryWrapper<MeetingMember> wrapper = new  LambdaQueryWrapper<>();
+        wrapper.eq(MeetingMember::getMeetingId, meetingId).eq(MeetingMember::getUserId, userId);
+        this.update(meetingMember,  wrapper);
     }
 }

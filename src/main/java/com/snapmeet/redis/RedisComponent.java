@@ -4,6 +4,7 @@ import com.snapmeet.constants.Constants;
 import com.snapmeet.entity.dto.MeetingJoinDto;
 import com.snapmeet.entity.dto.MeetingMemberDTO;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
+import com.snapmeet.enums.MeetingMemberStatusEnum;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Component;
 
@@ -61,5 +62,15 @@ public class RedisComponent {
 
     public MeetingMemberDTO getMeetingMember(String meetingId, String userId){
         return (MeetingMemberDTO)redisUtils.hmGet(Constants.REDIS_KEY_MEETING_ROOM+meetingId,userId);
+    }
+
+    public Boolean exitMeeting(String meetingId, String userId, MeetingMemberStatusEnum statusEnum) {
+        MeetingMemberDTO meetingMemberDTO = getMeetingMember(meetingId, userId);
+        if(meetingMemberDTO == null){
+            return false;
+        }
+        meetingMemberDTO.setStatus(statusEnum.getStatus());
+        add2Meeting(meetingId,meetingMemberDTO);
+        return true;
     }
 }

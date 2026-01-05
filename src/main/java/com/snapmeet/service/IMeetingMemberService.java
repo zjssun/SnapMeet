@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IMeetingMemberService extends IService<MeetingMember> {
     public void insertOrUpdate(MeetingMember meetingMember);
+    public void updateByMeetingIdAndUserId(MeetingMember meetingMember,String meetingId,String userId);
 }
