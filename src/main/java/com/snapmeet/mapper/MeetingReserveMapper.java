@@ -2,8 +2,9 @@ package com.snapmeet.mapper;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.snapmeet.entity.po.MeetingReserve;
-import com.snapmeet.entity.po.UserInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
  * <p>
@@ -11,8 +12,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author sam
- * @since 2025-12-07
+ * @since 2026-01-06
  */
-public interface UserInfoMapper extends MPJBaseMapper<MeetingReserve> {
+public interface MeetingReserveMapper extends MPJBaseMapper<MeetingReserve> {
 
 }

@@ -58,6 +58,12 @@
 			<artifactId>mybatis-plus-jsqlparser</artifactId>
 			<version>3.5.12</version>
 		</dependency>
+		<!--	MyBatis-plus插件	-->
+		<dependency>
+			<groupId>com.github.yulichang</groupId>
+			<artifactId>mybatis-plus-join-boot-starter</artifactId>
+			<version>1.5.5</version>
+		</dependency>
 		<!--	MySQL	-->
 		<dependency>
 			<groupId>com.mysql</groupId>

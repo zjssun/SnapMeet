@@ -1,19 +1,19 @@
 package com.snapmeet.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.annotation.GlobalInterceptor;
 import com.snapmeet.entity.dto.MeetingMemberDTO;
 import com.snapmeet.entity.dto.MessageSendDto;
 import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
+import com.snapmeet.entity.po.MeetingMember;
 import com.snapmeet.entity.vo.ResponseVO;
-import com.snapmeet.enums.MeetingMemberStatusEnum;
-import com.snapmeet.enums.MeetingStatusEnum;
-import com.snapmeet.enums.MessageSend2TypeEnum;
-import com.snapmeet.enums.MessageTypeEnum;
+import com.snapmeet.enums.*;
 import com.snapmeet.exception.BusinessException;
 import com.snapmeet.redis.RedisComponent;
 import com.snapmeet.service.impl.MeetingInfoServiceImpl;
+import com.snapmeet.service.impl.MeetingMemberServiceImpl;
 import com.snapmeet.utils.StringTools;
 import com.snapmeet.websocket.message.MessageHandler;
 import com.snapmeet.websocket.message.MessageHandler4RabbitMQ;
@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/meeting")
@@ -38,6 +39,9 @@ public class MeetingInfoController extends ABaseController{
 
     @Resource
     MeetingInfoServiceImpl meetingInfoService;
+
+    @Resource
+    MeetingMemberServiceImpl meetingMemberService;
 
     @Resource
     private MessageHandler messageHandler;
@@ -140,5 +144,29 @@ public class MeetingInfoController extends ABaseController{
         TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
         meetingInfoService.finishMeeting(tokenUserInfoDto.getCurrentMeetingId(),tokenUserInfoDto.getUserId());
         return getSuccessResponseVO(null);
+    }
+
+    // 把会议标记为结束
+    @RequestMapping("/delMeetingRecord")
+    @GlobalInterceptor
+    public ResponseVO delMeetingRecord(@NotEmpty String meetingId){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        MeetingMember meetingMember = new MeetingMember();
+        meetingMember.setStatus(MeetingMemberStatusEnum.DEL_MEETING.getStatus());
+        meetingMemberService.updateByMeetingIdAndUserId(meetingMember,meetingId,tokenUserInfoDto.getUserId());
+        return getSuccessResponseVO(null);
+    }
+
+    //获取会议人数
+    @RequestMapping("/loadMeetingMembers")
+    @GlobalInterceptor
+    public ResponseVO loadMeetingMembers(@NotEmpty String meetingId){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        List<MeetingMember> meetingMemberList = meetingMemberService.list(new LambdaQueryWrapper<MeetingMember>().eq(MeetingMember::getMeetingId,meetingId));
+        Optional<MeetingMember> first = meetingMemberList.stream().filter(item->item.getUserId().equals(tokenUserInfoDto.getUserId())).findFirst();
+        if(!first.isPresent()){
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        return getSuccessResponseVO(meetingMemberList);
     }
 }

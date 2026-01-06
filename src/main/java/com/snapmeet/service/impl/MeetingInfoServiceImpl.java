@@ -52,8 +52,6 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
 
     @Resource
     private MessageHandler messageHandler;
-    @Autowired
-    private MeetingMemberMapper meetingMemberMapper;
 
     @Override
     public Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo) {
