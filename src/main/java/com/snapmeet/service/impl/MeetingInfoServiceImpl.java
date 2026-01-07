@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.entity.dto.*;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.snapmeet.entity.po.MeetingMember;
+import com.snapmeet.entity.po.MeetingReserve;
+import com.snapmeet.entity.po.MeetingReserveMember;
 import com.snapmeet.enums.*;
 import com.snapmeet.exception.BusinessException;
 import com.snapmeet.mapper.MeetingInfoMapper;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,6 +55,12 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
 
     @Resource
     private MessageHandler messageHandler;
+
+    @Resource
+    private MeetingReserveServiceImpl meetingReserveService;
+
+    @Resource
+    private MeetingReserveMemberServiceImpl meetingReserveMemberService;
 
     @Override
     public Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo) {
@@ -209,8 +218,16 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         List<MeetingMemberDTO> onLineMember = meetingMemberDTOList.stream().filter(item-> MeetingMemberStatusEnum.NORMAL.getStatus().equals(item.getStatus())).collect(Collectors.toList());
         if(onLineMember.isEmpty()){
             //TODO 结束会议
-            finishMeeting(meetingId,tokenUserInfoDto.getUserId());
-            return;
+            MeetingReserve meetingReserve = meetingReserveService.getMeetingReserve(meetingId);
+            if(onLineMember.isEmpty()){
+                finishMeeting(meetingId,tokenUserInfoDto.getUserId());
+                return;
+            }
+            if(System.currentTimeMillis() > meetingReserve.getStartTime().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()){
+                finishMeeting(meetingId,null);
+                return;
+            }
+
         }
         if(ArrayUtils.contains(new Integer[]{MeetingMemberStatusEnum.KICK_OUT.getStatus(),MeetingMemberStatusEnum.BLACKLIST.getStatus()},statusEnum.getStatus())){
             MeetingMember meetingMember = new MeetingMember();
@@ -256,6 +273,9 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
         meetingMemberService.updateByMeeingId(meetingMember,currentMeetingId);
 
         //TODO 更新预约会议状态
+        MeetingReserve updateMeetingReserve = new MeetingReserve();
+        updateMeetingReserve.setStatus(MeetingStatusEnum.FINISHED.getStatus());
+        meetingReserveService.update(updateMeetingReserve,new LambdaQueryWrapper<MeetingReserve>().eq(MeetingReserve::getMeetingId, currentMeetingId));
 
         List<MeetingMemberDTO> meetingMemberDTOList = redisComponent.getMeetingMemberList(currentMeetingId);
         for (MeetingMemberDTO meetingMemberDTO:meetingMemberDTOList){
@@ -263,5 +283,41 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
             userInfoDto.setCurrentMeetingId(null);
             redisComponent.saveTokenUserInfoDto(userInfoDto);
         }
+    }
+
+    @Override
+    public void reserveJoinMeeting(String meetingId, TokenUserInfoDto tokenUserInfoDto, String joinPassword) {
+        String userId = tokenUserInfoDto.getUserId();
+        if(!StringTools.isEmpty(tokenUserInfoDto.getCurrentMeetingId()) && !meetingId.equals(tokenUserInfoDto.getCurrentMeetingId())){
+            throw new BusinessException("你有未结束的会议");
+        }
+        checkMeetingJoin(meetingId,userId);
+        MeetingReserve meetingReserve = meetingReserveService.getMeetingReserve(meetingId);
+        if(meetingReserve==null){
+            throw  new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        MeetingReserveMember member = meetingReserveMemberService.selectByMeetingIdAndUserId(meetingId,userId);
+        if (member == null) {
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        if(MeetingJoinTypeEnum.PASSWORD.getType().equals(meetingReserve.getJoinType())&&!meetingReserve.getJoinPassword().equals(joinPassword)){
+            throw  new BusinessException("入会密码不正确");
+        }
+        MeetingInfo meetingInfo = this.getOne(new LambdaQueryWrapper<MeetingInfo>().eq(MeetingInfo::getMeetingId, meetingId));
+        if(meetingInfo==null){
+            meetingInfo = new MeetingInfo();
+            meetingInfo.setMeetingName(meetingReserve.getMeetingName());
+            meetingInfo.setMeetingNo(StringTools.getMeetingNoOrMeetingId());
+            meetingInfo.setJoinType(meetingReserve.getJoinType());
+            meetingInfo.setJoinPassword(meetingReserve.getJoinPassword());
+            meetingInfo.setCreateTime(LocalDateTime.now());
+            meetingInfo.setMeetingId(meetingId);
+            meetingInfo.setStartTime(LocalDateTime.now());
+            meetingInfo.setStatus(MeetingStatusEnum.RUNING.getStatus());
+            meetingInfo.setCreateUserId(meetingReserve.getCreateUserId());
+            this.save(meetingInfo);
+        }
+        tokenUserInfoDto.setCurrentMeetingId(meetingId);
+        redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
     }
 }

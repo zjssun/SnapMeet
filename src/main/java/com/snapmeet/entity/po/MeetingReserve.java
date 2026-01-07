@@ -42,7 +42,7 @@ public class MeetingReserve implements Serializable {
     private Integer joinType;
 
     @TableField("join_password")
-    private Integer joinPassword;
+    private String joinPassword;
 
     @TableField("start_time")
     private LocalDateTime startTime;

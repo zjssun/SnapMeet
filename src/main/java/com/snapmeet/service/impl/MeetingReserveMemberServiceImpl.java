@@ -41,4 +41,9 @@ public class MeetingReserveMemberServiceImpl extends ServiceImpl<MeetingReserveM
             this.remove(new MPJLambdaWrapper<MeetingReserveMember>().eq(MeetingReserveMember::getMeetingId, meetingId));
         }
     }
+
+    @Override
+    public MeetingReserveMember selectByMeetingIdAndUserId(String meetingId, String userId) {
+        return this.getOne(new MPJLambdaWrapper<MeetingReserveMember>().eq(MeetingReserveMember::getMeetingId, meetingId).eq(MeetingReserveMember::getInviteUserId, userId));
+    }
 }

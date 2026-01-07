@@ -5,6 +5,7 @@ import com.snapmeet.entity.dto.TokenUserInfoDto;
 import com.snapmeet.entity.po.MeetingInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.snapmeet.enums.MeetingMemberStatusEnum;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -32,4 +33,6 @@ public interface IMeetingInfoService extends IService<MeetingInfo> {
     MeetingInfo getMeetingInfoListByMeetingId(String currentMeetingId);
 
     void finishMeeting(String currentMeetingId, String userId);
+
+    void reserveJoinMeeting(@NotEmpty String meetingId, TokenUserInfoDto tokenUserInfoDto, String joinPassword);
 }

@@ -16,4 +16,5 @@ import java.util.List;
  */
 public interface IMeetingReserveMemberService extends IService<MeetingReserveMember> {
     void deleteMeetingReserve(String meetingId,String userId);
+    MeetingReserveMember selectByMeetingIdAndUserId(String meetingId,String userId);
 }

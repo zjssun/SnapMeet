@@ -20,4 +20,5 @@ public interface IMeetingReserveService extends IService<MeetingReserve> {
 
     List<MeetingReserve> getTodayMeeting(String userId, Integer status);
 
+    MeetingReserve getMeetingReserve(String meetingId);
 }

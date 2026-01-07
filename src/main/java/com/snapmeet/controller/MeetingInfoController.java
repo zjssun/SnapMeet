@@ -169,4 +169,14 @@ public class MeetingInfoController extends ABaseController{
         }
         return getSuccessResponseVO(meetingMemberList);
     }
+
+    // 加入预约会议
+    @RequestMapping("/reserveJoinMeeting")
+    @GlobalInterceptor
+    public ResponseVO reserveJoinMeeting(@NotEmpty String meetingId,@NotEmpty String nickName,String joinPassword){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        tokenUserInfoDto.setCurrentNickName(nickName);
+        meetingInfoService.reserveJoinMeeting(meetingId,tokenUserInfoDto,joinPassword);
+        return  getSuccessResponseVO(null);
+    }
 }

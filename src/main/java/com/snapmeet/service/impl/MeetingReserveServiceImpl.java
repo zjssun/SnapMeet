@@ -86,4 +86,9 @@ public class MeetingReserveServiceImpl extends ServiceImpl<MeetingReserveMapper,
         List<MeetingReserve> list = this.list(wrapper);
         return  list;
     }
+
+    @Override
+    public MeetingReserve getMeetingReserve(String meetingId) {
+        return this.getOne(new MPJLambdaWrapper<MeetingReserve>().eq(MeetingReserve::getMeetingId, meetingId));
+    }
 }
