@@ -11,7 +11,8 @@ public enum MessageTypeEnum {
     CHAT_TEXT_MESSAGE(5,"文本消息"),
     CHAT_MEDIA_MESSAGE(6,"媒体消息"),
     CHAT_MEDIA_MESSAGE_UPDATE(7,"媒体消息更新"),
-    USER_CONTACT_APPLY(8,"好友申请消息");
+    USER_CONTACT_APPLY(8,"好友申请消息"),
+    USER_CONTACT_DEAL_WITH(12,"处理好友申请");
     @Getter
     private Integer type;
     @Getter
