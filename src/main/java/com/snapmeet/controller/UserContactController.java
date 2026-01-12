@@ -7,6 +7,7 @@ import com.snapmeet.entity.po.UserContact;
 import com.snapmeet.entity.po.UserContactApply;
 import com.snapmeet.entity.vo.ResponseVO;
 import com.snapmeet.entity.vo.UserInfoVO4Search;
+import com.snapmeet.enums.UserContactApplyStatusEnum;
 import com.snapmeet.enums.UserContactStatusEnum;
 import com.snapmeet.service.impl.UserContactApplyServiceImpl;
 import com.snapmeet.service.impl.UserContactServiceImpl;
@@ -33,8 +34,11 @@ public class UserContactController extends ABaseController{
     @RequestMapping("/loadContactApplyDealWhitCount")
     @GlobalInterceptor
     public ResponseVO loadContactApplyDealWhitCount(){
-
-        return getSuccessResponseVO(null);
+        TokenUserInfoDto tokenUserInfoDto = new TokenUserInfoDto();
+        Long count = userContactApplyService.count(new LambdaQueryWrapper<UserContactApply>()
+                .eq(UserContactApply::getStatus, UserContactApplyStatusEnum.INIT.getStatus())
+                .eq(UserContactApply::getReceiveUserId, tokenUserInfoDto.getUserId()));
+        return getSuccessResponseVO(count);
     }
 
     @RequestMapping("/searchContact")
@@ -81,5 +85,13 @@ public class UserContactController extends ABaseController{
         List<UserContactApply> ApplyList = userContactApplyService.list(new LambdaQueryWrapper<UserContactApply>()
                 .eq(UserContactApply::getReceiveUserId,tokenUserInfoDto.getUserId()));
         return getSuccessResponseVO(ApplyList);
+    }
+
+    @RequestMapping("/delContact")
+    @GlobalInterceptor
+    public ResponseVO delContact(@NotEmpty String contactId,@NotNull Integer status){
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        userContactService.delContact(tokenUserInfoDto.getUserId(),contactId,status);
+        return getSuccessResponseVO(null);
     }
 }

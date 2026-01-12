@@ -82,4 +82,12 @@ public class RedisComponent {
         }
         redisUtils.hdel(Constants.REDIS_KEY_MEETING_ROOM + meetingId,userIdList.toArray(new String[userIdList.size()]));
     }
+
+    public void addInviteInfo(String meetingId,String userId){
+        redisUtils.setex(Constants.REDIS_KEY_INVITE_MEMBER+userId+meetingId,meetingId,Constants.REDIS_KEY_EXPIRES_ONE_MIN*5);
+    }
+
+    public String getInviteInfo(String userId,String meetingId){
+        return (String) redisUtils.get(Constants.REDIS_KEY_INVITE_MEMBER+userId+meetingId);
+    }
 }

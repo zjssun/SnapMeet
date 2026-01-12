@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.snapmeet.entity.dto.*;
-import com.snapmeet.entity.po.MeetingInfo;
-import com.snapmeet.entity.po.MeetingMember;
-import com.snapmeet.entity.po.MeetingReserve;
-import com.snapmeet.entity.po.MeetingReserveMember;
+import com.snapmeet.entity.po.*;
 import com.snapmeet.enums.*;
 import com.snapmeet.exception.BusinessException;
 import com.snapmeet.mapper.MeetingInfoMapper;
@@ -27,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,6 +59,9 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
 
     @Resource
     private MeetingReserveMemberServiceImpl meetingReserveMemberService;
+
+    @Resource
+    private UserContactServiceImpl userContactService;
 
     @Override
     public Page<MeetingInfo> getMeetingInfoList(String userId, Integer pageNo) {
@@ -318,6 +319,50 @@ public class MeetingInfoServiceImpl extends ServiceImpl<MeetingInfoMapper, Meeti
             this.save(meetingInfo);
         }
         tokenUserInfoDto.setCurrentMeetingId(meetingId);
+        redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
+    }
+
+    @Override
+    public void inviteMember(TokenUserInfoDto tokenUserInfoDto, String selectContactIds) {
+        String[] contactIds = selectContactIds.split(",");
+        List<UserContact> userContactList = userContactService.list(new LambdaQueryWrapper<UserContact>()
+                .eq(UserContact::getUserId, tokenUserInfoDto.getUserId())
+                .eq(UserContact::getStatus,UserContactStatusEnum.FRIEND.getStatus()));
+        List<String> contactIdList = userContactList.stream().map(UserContact::getContactId).toList();
+        if(!contactIdList.containsAll(Arrays.asList(contactIds))){
+            throw new  BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        MeetingInfo meetingInfo = this.getOne(new LambdaQueryWrapper<MeetingInfo>()
+                .eq(MeetingInfo::getMeetingId,tokenUserInfoDto.getCurrentMeetingId()));
+        for(String contactId : contactIds){
+            MeetingMemberDTO meetingMemberDTO = redisComponent.getMeetingMember(tokenUserInfoDto.getCurrentMeetingId(),contactId);
+            if(meetingMemberDTO!=null&&MeetingMemberStatusEnum.NORMAL.getStatus().equals(meetingInfo.getStatus())){
+                continue;
+            }
+            redisComponent.addInviteInfo(tokenUserInfoDto.getCurrentMeetingId(),contactId);
+            MessageSendDto messageSendDto = new  MessageSendDto();
+            messageSendDto.setMessageType(MessageTypeEnum.INVITE_MEMBER_MEETING.getType());
+            messageSendDto.setMessageSend2Type(MessageSend2TypeEnum.USER.getType());
+            messageSendDto.setReceiveUserId(contactId);
+
+            MeetingInviteDto meetingInviteDto = new MeetingInviteDto();
+            meetingInviteDto.setMeetingName(meetingInfo.getMeetingName());
+            meetingInviteDto.setInviteUserName(tokenUserInfoDto.getNickName());
+            meetingInviteDto.setMeetingId(tokenUserInfoDto.getCurrentMeetingId());
+
+            messageSendDto.setMessageContent(JSON.toJSON(meetingInviteDto));
+            messageHandler.sendMessage(messageSendDto);
+        }
+    }
+
+    @Override
+    public void acceptInvite(TokenUserInfoDto tokenUserInfoDto, String meetingId) {
+        String redisMeetingId = redisComponent.getInviteInfo(tokenUserInfoDto.getUserId(),meetingId);
+        if(redisMeetingId==null){
+            throw new   BusinessException("邀请信息已过期！");
+        }
+        tokenUserInfoDto.setCurrentMeetingId(redisMeetingId);
+        tokenUserInfoDto.setCurrentNickName(tokenUserInfoDto.getNickName());
         redisComponent.saveTokenUserInfoDto(tokenUserInfoDto);
     }
 }

@@ -5,13 +5,18 @@ import com.snapmeet.entity.po.UserContact;
 import com.snapmeet.entity.po.UserContactApply;
 import com.snapmeet.entity.po.UserInfo;
 import com.snapmeet.entity.vo.UserInfoVO4Search;
+import com.snapmeet.enums.ResponseCodeEnum;
 import com.snapmeet.enums.UserContactApplyStatusEnum;
 import com.snapmeet.enums.UserContactStatusEnum;
+import com.snapmeet.exception.BusinessException;
 import com.snapmeet.mapper.UserContactMapper;
 import com.snapmeet.service.IUserContactService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -66,4 +71,17 @@ public class UserContactServiceImpl extends ServiceImpl<UserContactMapper, UserC
 
         return result;
     }
+
+    @Override
+    public void delContact(String userId,String contactId, Integer status) {
+        if(!ArrayUtils.contains(new Integer[]{UserContactStatusEnum.DEL.getStatus(),UserContactStatusEnum.BLACKLIST.getStatus()},status)){
+            throw new BusinessException(ResponseCodeEnum.CODE_600);
+        }
+        UserContact userContact = new UserContact();
+        userContact.setLastUpdateTime(LocalDateTime.now());
+        userContact.setStatus(status);
+        this.update(userContact,new LambdaQueryWrapper<UserContact>().eq(UserContact::getUserId,userId).eq(UserContact::getContactId,contactId));
+    }
+
+
 }

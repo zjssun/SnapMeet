@@ -14,4 +14,6 @@ import com.snapmeet.entity.vo.UserInfoVO4Search;
  */
 public interface IUserContactService extends IService<UserContact> {
     UserInfoVO4Search searchContact(String myUserId,String userId);
+    void delContact(String userId,String contactId,Integer status);
+
 }

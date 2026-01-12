@@ -35,4 +35,8 @@ public interface IMeetingInfoService extends IService<MeetingInfo> {
     void finishMeeting(String currentMeetingId, String userId);
 
     void reserveJoinMeeting(@NotEmpty String meetingId, TokenUserInfoDto tokenUserInfoDto, String joinPassword);
+
+    void inviteMember(TokenUserInfoDto tokenUserInfoDto, @NotEmpty String selectContactIds);
+
+    void acceptInvite(TokenUserInfoDto tokenUserInfoDto,String meetingId);
 }
