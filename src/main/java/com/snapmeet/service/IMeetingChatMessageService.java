@@ -2,6 +2,9 @@ package com.snapmeet.service;
 
 import com.snapmeet.entity.po.MeetingChatMessage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -14,4 +17,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IMeetingChatMessageService extends IService<MeetingChatMessage> {
 
     void saveChatMessage(MeetingChatMessage chatMessage);
+
+    void uploadFile(MultipartFile file,String meetingId, Long messageId, Long sendTime) throws IOException;
 }

@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping
@@ -39,6 +42,7 @@ public class ChatController extends ABaseController{
         MeetingChatMessage chatMessage = new MeetingChatMessage();
         chatMessage.setMessageType(messageType);
         chatMessage.setMessageContent(message);
+        chatMessage.setFileName(fileName);
         chatMessage.setFileSize(fileSize);
         chatMessage.setFileType(fileType);
         chatMessage.setSendUserId(tokenUserInfoDto.getUserId());
@@ -52,5 +56,12 @@ public class ChatController extends ABaseController{
         chatMessage.setReceiveUserId(receiveUserId);
         meetingChatMessageService.saveChatMessage(chatMessage);
         return getSuccessResponseVO(null);
+    }
+    @RequestMapping("/uploadFile")
+    @GlobalInterceptor
+    public ResponseVO uploadFile(MultipartFile file,Long messageId,Long sendTime) throws IOException {
+        TokenUserInfoDto tokenUserInfoDto = getTokenUserInfoDto();
+        meetingChatMessageService.uploadFile(file,tokenUserInfoDto.getCurrentMeetingId(),messageId,sendTime);
+        return  getSuccessResponseVO(null);
     }
 }

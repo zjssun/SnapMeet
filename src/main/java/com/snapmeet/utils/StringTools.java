@@ -93,5 +93,9 @@ public class StringTools {
         BeanUtils.copyProperties(source, target); // 复制属性
         return target;
     }
+
+    public static  String getImageThumbnail(String fileName){
+        return fileName + Constants.IMAGE_THUMBNAIL_SUFFIX + Constants.IMAGE_SUFFIX;
+    }
     
 }

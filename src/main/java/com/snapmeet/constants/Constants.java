@@ -64,4 +64,6 @@ public class Constants {
     public static final String MESSAGEING_HANDLE_CHANNEL_REDIS = "redis";
 
     public static final String MESSAGEING_HANDLE_CHANNEL_RABBITMQ = "rabbitmq";
+
+    public static final String vIDEo_CODE_HEVC = "hevc";
 }
