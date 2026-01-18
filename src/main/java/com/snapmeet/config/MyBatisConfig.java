@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.example.snapmeet.mapper")
+@MapperScan("com.snapmeet.mapper")
 public class MyBatisConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(){

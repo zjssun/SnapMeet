@@ -74,5 +74,24 @@ public class StringTools {
         }
         return t;
     }
+
+    //拿文件后缀
+    public static String getFileSuffix(String fileName){
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        return suffix;
+    }
+
+    public static <T> T copyProperties(Object source, Class<T> targetClass) {
+        T target = null; // 反射创建对象
+        try {
+            target = targetClass.newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        BeanUtils.copyProperties(source, target); // 复制属性
+        return target;
+    }
     
 }
